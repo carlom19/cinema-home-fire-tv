@@ -1,0 +1,31 @@
+VALIDACIÓN DE REFERENCIA — 24 OCTUBRE 2026
+
+Hardware: Amazon Fire TV Stick 4K Max, primera generación, modelo AFTKA.
+Firmware: Fire OS 7.7.1.3, PS7713.5443N, Android9/API28, armeabi-v7a.
+Proyecto base: humblemuzzu/dumbtv, commit 12c21f7d1db255a63786d250895a18e32d214924.
+
+Comprobado:
+- preflight oficial y snapshots originales antes de los cambios.
+- dumbtv home1.2 oficial instalado con checksum verificado.
+- ocho paquetes publicitarios documentados desactivados individualmente.
+- apps conservadas sin desinstalar; OTA y Alexa mantuvieron su estado habilitado.
+- HOME oficial y Alexa confirmados con el control por el propietario.
+- desactivaciones persistentes tras reinicio confirmado por boot_id.
+- Cinema home compilado con JDK17, API25, Build-Tools34, Java8 y -Werror.
+- APK con firma y alineación verificadas; instalación paralela al oficial.
+- clima por ciudad contrastado con datos reales de Open-Meteo y revisado en TV.
+- Guard de Cinema enlazado, retorno desde Prime Video/Netflix/YouTube y
+  persistencia del enganche después de reiniciar, confirmada con boot_id.
+- versión1.2 con dos iconos de cabecera: Personalizar abre Options; Ajustes
+  abre MainSettingsActivity de Fire OS; HOME regresa a Cinema.
+- capturas nativas a 1920x1080 revisadas para composición y legibilidad.
+
+Alcance de las pruebas:
+La prueba de apps fue de apertura/retorno, no de reproducción ni suscripciones.
+No se instaló una OTA para probar las actualizaciones; se comprobó que sus
+componentes y la conectividad general no fueron bloqueados.
+No se probaron todos los escenarios de pérdida de red, otros modelos, otras
+versiones de Fire OS ni una restauración destructiva completa.
+El restaurador del enganche se revisó sintácticamente, sin ejecutarlo sobre
+la configuración que el propietario desea conservar.
+Las capturas originales y los snapshots privados no se publican.

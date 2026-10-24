@@ -14,6 +14,7 @@ TV original no son prueba de compatibilidad de la nueva.
 
 2. ARCHIVOS Y PROCEDENCIA
 Repositorio: https://github.com/humblemuzzu/dumbtv
+Referencia pública de esta variante: https://github.com/carlom19/cinema-home-fire-tv
 Commit utilizado: 12c21f7d1db255a63786d250895a18e32d214924
 Versión oficial instalada: dumbtv home 1.2; SHA-256 esperado en launcher/version.env.
 Variante local: cinema-launcher/, paquete tv.dumbtv.cinema, versión1.2.
@@ -140,7 +141,9 @@ Pedir aprobación del alcance visual si aún no está autorizado. Instalar el AP
 incluido como aplicación aparte; conservar dumbtv home para volver atrás.
 Verificar SHA-256 con SHA256SUMS.txt antes de instalar.
 Desde la raíz del kit, una vez aprobada la vista previa:
-  & $adb -s $targetTv install -r '.\cinema-launcher\build\cinema-home-preview.apk'
+  $cinemaApk = '.\dist\cinema-home-1.2.apk'
+  if (-not (Test-Path $cinemaApk)) { $cinemaApk = '.\cinema-launcher\build\cinema-home-preview.apk' }
+  & $adb -s $targetTv install -r $cinemaApk
   & $adb -s $targetTv shell mkdir -p /sdcard/Android/data/tv.dumbtv.cinema/files
   & $adb -s $targetTv push '.\cinema-launcher\home.example.conf' /sdcard/Android/data/tv.dumbtv.cinema/files/home.conf
   & $adb -s $targetTv push '.\cinema-launcher\assets\wallpaper.png' /sdcard/Android/data/tv.dumbtv.cinema/files/wallpaper.png

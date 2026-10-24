@@ -33,7 +33,7 @@ Lee este archivo y `docs/GUIA-CLAUDE-OTRO-FIRE-TV.txt` antes de operar un Fire T
 - Compila con JDK 17 / API 25 / Build-Tools 34, mediante cinema-launcher/build-windows.ps1. Trata advertencias como errores y verifica la firma.
 - Evalúa la UI mediante capturas de la TV o un emulador Android, no una representación web que aparente ser una prueba nativa.
 - El clima requiere ciudad confirmada; nunca infieras ubicación precisa ni solicites GPS. Conserva tiempos de espera, caché, reintentos y ausencia de cuentas/analítica.
-- Revisa que la ciudad, datos y foco se vean completos junto al reloj. Iconos pequeños deben conservar blancos de enfoque accesibles.
+- Revisa que la ciudad, datos y foco se vean completos junto al reloj. Iconos pequeños deben conservar áreas de enfoque accesibles.
 
 ## Privacidad
 

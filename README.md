@@ -66,11 +66,11 @@ cd cinema-launcher
 
 No usa Gradle ni dependencias de interfaz. Compila Java con `--release 8` y advertencias como errores, genera DEX y alinea y firma el APK. Guarda la clave creada en `cinema-launcher/build/cinema.keystore` de forma privada. **Una compilación con otra clave no puede actualizar el APK publicado sobre una instalación existente.**
 
-Para instalar el APK ya compilado solo hacen falta ADB y Git Bash para el diagnóstico oficial; no necesitas JDK ni SDK.
+Para instalar el APK ya compilado solo hacen falta ADB y Git Bash para el diagnóstico oficial; no necesitas JDK ni SDK. Descarga [Platform-Tools para Windows desde Android Developers](https://developer.android.com/tools/releases/platform-tools) y extrae la carpeta `platform-tools` dentro de `tools/` en este repositorio, de modo que exista `tools/platform-tools/adb.exe`. Las herramientas descargadas quedan excluidas de Git.
 
 ## Restauración
 
-Conserva las capturas de ajustes y estados de paquetes de **cada TV** antes de modificarla. Para retirar Cinema, restaura primero el enganche HOME anterior y comprueba el retorno; después desinstala Cinema si quieres eliminar sus ajustes. El ejemplo [Restore-CinemaHome.ps1](scripts/Restore-CinemaHome.ps1) requiere las [capturas de ese mismo aparato](docs/RESTORE-SNAPSHOTS.txt) y verifica su identidad. No incluye ni inventa esas capturas.
+Conserva las capturas de ajustes y estados de paquetes de **cada TV** antes de modificarla. Para retirar Cinema, restaura primero el enganche HOME anterior y comprueba el retorno; después desinstala Cinema si quieres eliminar sus ajustes. El ejemplo [Restore-CinemaHome.ps1](scripts/Restore-CinemaHome.ps1) requiere las capturas de ese mismo aparato y verifica su identidad. No incluye ni inventa esas capturas.
 
 No uses un restaurador general de otra TV ni actives en bloque paquetes que ya estaban desactivados. Los cambios opcionales de publicidad se revierten a sus estados originales individuales. No hace falta root ni restablecimiento de fábrica.
 
