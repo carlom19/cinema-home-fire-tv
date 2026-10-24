@@ -1,4 +1,4 @@
-Lee GUIA-CLAUDE-OTRO-FIRE-TV.txt y ESTADO-Y-CAMBIOS.txt de esta carpeta.
+Lee AGENTS.md, docs/GUIA-CLAUDE-OTRO-FIRE-TV.txt y docs/VALIDATION.txt.
 Quiero replicar esta configuración en OTRO Fire TV desde Windows.
 
 Datos del nuevo Fire TV:

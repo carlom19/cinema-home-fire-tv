@@ -1,5 +1,5 @@
 GUÍA PARA CLAUDE CODE: REPLICAR LA CONFIGURACIÓN EN OTRO FIRE TV
-Registro: 24 de octubre de 2026. Leer también ESTADO-Y-CAMBIOS.txt.
+Registro: 24 de octubre de 2026. Leer también VALIDATION.txt de esta carpeta.
 
 1. OBJETIVO Y LÍMITES
 Instalar dumbtv home primero y comprobarlo. Opcionalmente instalar la variante
@@ -19,13 +19,13 @@ Commit utilizado: 12c21f7d1db255a63786d250895a18e32d214924
 Versión oficial instalada: dumbtv home 1.2; SHA-256 esperado en launcher/version.env.
 Variante local: cinema-launcher/, paquete tv.dumbtv.cinema, versión1.2.
 Es código Java nativo basado en el proyecto MIT; LICENSE se conserva.
-Cinema home NO se obtiene clonando solamente el repositorio de GitHub: es
+Cinema home NO se obtiene clonando solamente humblemuzzu/dumbtv: es
 necesario el APK o los archivos de cinema-launcher incluidos en el paquete.
 
-En esta carpeta están los repositorios y herramientas originales. En el ZIP
-KIT-CLAUDE-FIRE-TV.zip se incluyen instrucciones, sources, res, AndroidManifest,
-APK, fondo, configuración de ejemplo, hashes y ADB para Windows. No se incluyen
-JDK/SDK grandes; para instalar el APK ya compilado no hacen falta.
+Este repositorio contiene Cinema, sus fuentes, recursos y APK en dist/.
+Clonar humblemuzzu/dumbtv por separado para su diagnóstico e instalación oficial.
+Descargar ADB oficial y colocar platform-tools dentro de tools/, según README.
+JDK/SDK no se incluyen ni hacen falta para instalar el APK ya compilado.
 No se incluyen report/, review/, claves de ADB, cuentas, capturas privadas ni
 la clave privada cinema.keystore. No copiar configuraciones de apps de otra TV.
 

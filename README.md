@@ -70,7 +70,7 @@ Para instalar el APK ya compilado solo hacen falta ADB y Git Bash para el diagn�
 
 ## Restauración
 
-Conserva las capturas de ajustes y estados de paquetes de **cada TV** antes de modificarla. Para retirar Cinema, restaura primero el enganche HOME anterior y comprueba el retorno; después desinstala Cinema si quieres eliminar sus ajustes. El ejemplo [Restore-CinemaHome.ps1](scripts/Restore-CinemaHome.ps1) requiere las capturas de ese mismo aparato y verifica su identidad. No incluye ni inventa esas capturas.
+Conserva las capturas de ajustes y estados de paquetes de **cada TV** antes de modificarla. Para retirar Cinema, restaura primero el enganche HOME anterior y comprueba el retorno; después desinstala Cinema si quieres eliminar sus ajustes. El ejemplo [Restore-CinemaHome.ps1](scripts/Restore-CinemaHome.ps1) requiere las [capturas de ese mismo aparato](docs/RESTORE-SNAPSHOTS.txt) y verifica su identidad. No incluye ni inventa esas capturas.
 
 No uses un restaurador general de otra TV ni actives en bloque paquetes que ya estaban desactivados. Los cambios opcionales de publicidad se revierten a sus estados originales individuales. No hace falta root ni restablecimiento de fábrica.
 
