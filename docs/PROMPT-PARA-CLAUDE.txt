@@ -1,0 +1,29 @@
+Lee GUIA-CLAUDE-OTRO-FIRE-TV.txt y ESTADO-Y-CAMBIOS.txt de esta carpeta.
+Quiero replicar esta configuración en OTRO Fire TV desde Windows.
+
+Datos del nuevo Fire TV:
+- IP: [pedírmela si no la proporcioné]
+- Ciudad y país para el clima: [pedírmelos si faltan]
+
+Antes de modificar la TV, clona el repositorio en la revisión documentada,
+lee README.md y AGENTS.md, verifica ADB y la autorización Wi-Fi y ejecuta
+scripts/preflight.sh en una carpeta de reportes NUEVA para ese aparato.
+Muéstrame el diagnóstico y pide autorización para el plan concreto.
+
+Instala primero únicamente dumbtv home. Conserva Prime Video, Netflix, YouTube,
+Alexa y las actualizaciones automáticas. Si apruebo la publicidad, desactiva
+solo los ocho candidatos documentados que estén presentes y sean compatibles.
+No ejecutes la limpieza completa, filtros DNS, lockdown ni SmartTube.
+
+Después prepara Cinema home como vista previa separada con el APK incluido,
+su paisaje, cuadrícula y nombres visibles. Oculta ARC solo en la interfaz si
+identificas su entrada real. Configura el clima de mi ciudad y compruébalo
+con datos reales. No copies las listas de apps ni los reportes de otra TV.
+
+Conserva el lanzador oficial y pregunta si quiero Cinema como HOME después de
+mostrar la vista previa. El HOME de Cinema y el clima se probaron en el AFTKA
+de referencia; repite esas pruebas y no asumas compatibilidad por analogía.
+
+Guarda estado previo y un procedimiento de restauración específico de esta TV.
+Comprueba las apps, el control, Alexa y las actualizaciones antes de terminar.
+No desinstales una app para resolver un conflicto de firma sin consultarme.

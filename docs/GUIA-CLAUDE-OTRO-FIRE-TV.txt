@@ -1,0 +1,263 @@
+GUÍA PARA CLAUDE CODE: REPLICAR LA CONFIGURACIÓN EN OTRO FIRE TV
+Registro: 24 de octubre de 2026. Leer también ESTADO-Y-CAMBIOS.txt.
+
+1. OBJETIVO Y LÍMITES
+Instalar dumbtv home primero y comprobarlo. Opcionalmente instalar la variante
+Cinema home inspirada en tvOS. Desactivar únicamente los ocho componentes de
+publicidad aprobados y presentes en el nuevo aparato, de forma reversible.
+Conservar Prime Video, Netflix, YouTube, Alexa y las actualizaciones automáticas.
+No root, no escritura en /system, no factory reset, no eliminación de APKs del
+sistema. No instalar filtro DNS, SmartTube ni restricciones generales de red.
+No ejecutar all.sh, debloat.sh, lockdown.sh, dnsfilter.sh ni youtube.sh.
+Una nueva TV requiere diagnóstico y autorización propios: los resultados de la
+TV original no son prueba de compatibilidad de la nueva.
+
+2. ARCHIVOS Y PROCEDENCIA
+Repositorio: https://github.com/humblemuzzu/dumbtv
+Commit utilizado: 12c21f7d1db255a63786d250895a18e32d214924
+Versión oficial instalada: dumbtv home 1.2; SHA-256 esperado en launcher/version.env.
+Variante local: cinema-launcher/, paquete tv.dumbtv.cinema, versión1.2.
+Es código Java nativo basado en el proyecto MIT; LICENSE se conserva.
+Cinema home NO se obtiene clonando solamente el repositorio de GitHub: es
+necesario el APK o los archivos de cinema-launcher incluidos en el paquete.
+
+En esta carpeta están los repositorios y herramientas originales. En el ZIP
+KIT-CLAUDE-FIRE-TV.zip se incluyen instrucciones, sources, res, AndroidManifest,
+APK, fondo, configuración de ejemplo, hashes y ADB para Windows. No se incluyen
+JDK/SDK grandes; para instalar el APK ya compilado no hacen falta.
+No se incluyen report/, review/, claves de ADB, cuentas, capturas privadas ni
+la clave privada cinema.keystore. No copiar configuraciones de apps de otra TV.
+
+3. PREPARAR WINDOWS Y CONECTAR
+Usar PowerShell y Git Bash. No usar el bash de WSL con adb.exe si existe Git Bash.
+Verificar Git y ADB. ADB utilizado aquí: Platform-Tools 37.0.1, adb 1.0.41.
+Fuente oficial: https://developer.android.com/tools/releases/platform-tools
+
+En una carpeta nueva, clonar y fijar la revisión utilizada:
+  git clone https://github.com/humblemuzzu/dumbtv.git dumbtv
+  git -C dumbtv checkout --detach 12c21f7d1db255a63786d250895a18e32d214924
+Leer README.md y AGENTS.md completos, y cualquier AGENTS.md aplicable.
+Si se prefiere una revisión posterior, revisarla primero y no asumir que sus
+scripts tienen el mismo alcance. No modificar las listas del proyecto.
+
+La persona activa Depuración ADB desde las opciones de desarrollador en la TV.
+Consultar catalog/devices para las rutas de menú y particularidades del modelo.
+PC y TV deben estar en la misma red. Pedir IP actual; no reutilizar la anterior.
+En PowerShell, desde la carpeta del kit:
+  $adb = (Resolve-Path '.\tools\platform-tools\adb.exe').Path
+  $targetTv = 'IP_DEL_NUEVO_FIRE_TV:5555'
+  & $adb connect $targetTv
+  & $adb devices -l
+Si aparece unauthorized, pedir que acepte Allow USB debugging en la TV y esperar;
+no reintentar en bucle. Seleccionar siempre ese dispositivo con -s/ADB_SERIAL.
+
+4. PRIMERO PREFLIGHT: SOLO LECTURA
+Crear una carpeta de diagnóstico NUEVA y exclusiva para esta TV. No reutilizar
+las capturas de otra TV ni las de una instalación anterior.
+Antes de cualquier modificación de la TV ejecutar scripts/preflight.sh.
+El ayudante scripts/Diagnostico.ps1 del kit conecta, comprueba autorización y
+ejecuta ese script; solo escribe informes en la computadora:
+  .\scripts\Diagnostico.ps1 -TvAddress $targetTv
+Requiere el clon en .\dumbtv y Git Bash instalado. Devuelve la ruta de reportes.
+Para invocación manual desde PowerShell, establecer:
+  $env:ADB = $adb.Replace('\','/')
+  $env:ADB_SERIAL = $targetTv
+  $env:SERIAL = $targetTv
+  $env:REPORT = 'RUTA_ABSOLUTA_DE_UNA_CARPETA_NUEVA'
+  Set-Location dumbtv
+  & 'C:\Program Files\Git\bin\bash.exe' scripts/preflight.sh
+
+Preflight lee el estado de la TV y guarda secure/global en la computadora.
+Su sección «the pass would» describe el paquete completo, NO el plan limitado
+autorizado aquí. No confundir sus conteos con acciones realizadas.
+Identificar fabricante, modelo, SDK, compilación y catálogo. Las reglas del
+proyecto cubren Fire OS 6/7/8; Fire OS 5 o plataformas distintas no se autorizan
+por analogía. El original fue AFTKA / Fire OS 7.7.1.3 / SDK28, catálogo partial.
+Fire OS 6 usa Keeper; Fire OS 7/8 usan Guard. Cinema solo se probó en ese AFTKA.
+
+Guardar también, antes de cambiar nada:
+- pm list packages, pm list packages -d y -3.
+- dumpsys package para los paquetes a modificar y los que se conservarán;
+  guardar el enabled=N original, no solo si aparece deshabilitado.
+- settings get secure enabled_accessibility_services y accessibility_enabled.
+- settings get global alarm_manager_constants.
+- cmd package resolve-activity --brief -a android.intent.action.MAIN
+  -c android.intent.category.HOME.
+- dumpsys deviceidle whitelist; cmd netpolicy get restrict-background.
+- Configuración/APK de un lanzador preexistente, si procede.
+Conservar los valores ausentes como ausentes; no confundir null con una cadena.
+Mostrar el diagnóstico y las acciones concretas. Pedir autorización antes del
+primer cambio en esa TV. Si algo no está cubierto, detenerse y explicarlo.
+
+5. INSTALAR PRIMERO SOLO DUMBTV HOME
+Tras aprobación y con ADB_SERIAL/ADB configurados:
+  & 'C:\Program Files\Git\bin\bash.exe' scripts/configure.sh -y --prime 1 --alexa 1 --launcher 1 --dnsfilter 0 --youtube 0
+  & 'C:\Program Files\Git\bin\bash.exe' launcher/install.sh
+configure escribe solo preferencias locales. REMOVE_EXTRA debe quedar vacío.
+install descarga el APK oficial y verifica su SHA-256. Cambia el enganche HOME,
+accesibilidad y, en Fire OS 7/8, alarm_manager_constants min_futurity=0; añade
+la exclusión de deviceidle. No sustituirlo por instalar solo un APK y asumir HOME.
+Si hay conflicto de firma, no desinstalar automáticamente una app existente.
+
+Comprobar Guard enlazado o Keeper según Fire OS y HOME real desde una app.
+Abrir Prime Video, Netflix y YouTube usando componentes resueltos en ESA TV:
+  adb -s ... shell cmd package resolve-activity --brief -a android.intent.action.MAIN -c android.intent.category.LEANBACK_LAUNCHER -p PAQUETE
+No inventar nombres de actividades. Los paquetes también se confirman primero.
+Pedir al propietario una prueba de voz con Alexa y HOME con el control remoto.
+Ejecutar scripts/verify.sh con DNSFILTER=0; revisar salida y código de retorno.
+Esto comprueba el lanzador oficial, no certifica automáticamente Cinema home.
+
+6. PUBLICIDAD: OCHO CANDIDATOS, NO UNA LISTA UNIVERSAL
+Los ocho siguientes existían en el aparato original y se desactivaron, sin
+desinstalar, con pm disable-user --user 0:
+  com.amazon.hybridadidservice
+  com.amazon.privacypassservice
+  com.amazon.shoptv.client
+  com.amazon.shoptv.firetv.client
+  com.amazon.sneakpeek
+  com.amazon.tahoe
+  com.amazon.systemnotices
+  com.amazon.tv.website_launcher
+
+En la nueva TV comprobar pm list packages, el catálogo y TODOS los
+never-disable.txt antes de tocar cada uno. Ausente = omitir, nunca inventarlo.
+Si ya está desactivado, conservar su estado. Registrar estado original y cambio
+por paquete; confirmar enabled=3 después. Ante PROTECTED/SUSPECT u otro fallo,
+detenerse, no intentar root ni bloquear otros paquetes como compensación.
+No aplicar restricciones de appops o de red: no forman parte de este alcance.
+Esto reduce anuncios/promociones del sistema, no anuncios dentro de streaming.
+
+NO desactivar com.amazon.device.software.ota, .ota.override,
+com.amazon.tv.forcedotaupdater.v2 ni com.amazon.tv.easyupgrade, si existen.
+Conservar también componentes Alexa, los de reproducción y los never-disable.
+No desactivar com.amazon.vizzini. No activar Data Saver.
+Los paquetes conservados en la TV original fueron com.amazon.firebat,
+com.netflix.ninja, com.amazon.firetv.youtube y com.amazon.aca, más OTA.
+Verificar los equivalentes de la nueva TV; no asumir mismos nombres en otros OS.
+
+7. CINEMA HOME: VISTA PREVIA OPCIONAL
+Pedir aprobación del alcance visual si aún no está autorizado. Instalar el APK
+incluido como aplicación aparte; conservar dumbtv home para volver atrás.
+Verificar SHA-256 con SHA256SUMS.txt antes de instalar.
+Desde la raíz del kit, una vez aprobada la vista previa:
+  & $adb -s $targetTv install -r '.\cinema-launcher\build\cinema-home-preview.apk'
+  & $adb -s $targetTv shell mkdir -p /sdcard/Android/data/tv.dumbtv.cinema/files
+  & $adb -s $targetTv push '.\cinema-launcher\home.example.conf' /sdcard/Android/data/tv.dumbtv.cinema/files/home.conf
+  & $adb -s $targetTv push '.\cinema-launcher\assets\wallpaper.png' /sdcard/Android/data/tv.dumbtv.cinema/files/wallpaper.png
+  & $adb -s $targetTv shell am start -W -n tv.dumbtv.cinema/.Home
+Si Cinema ya existe, respaldar su configuración y comprobar firma antes de -r;
+no sobrescribir su home.conf con el ejemplo. Verificar cada comando y detenerse
+ante error, especialmente en Fire OS 8, donde Android/data puede estar restringido.
+No cambiar permisos ni SELinux para forzar una copia: explicar el impedimento.
+
+La configuración de ejemplo no copia listas de apps ocultas/ordenadas del dueño
+original. Seleccionarlas con Personalizar en la TV. ARC se ocultó mediante
+inputs.hide=<ID real de ARC>; el original era
+com.mediatek.tvinput/.ARCInputService/HW1. Descubrir el ID en dumpsys tv_input
+de la nueva TV; no asumir ese ID ni desactivar el servicio de audio.
+
+La app usa cuadrícula, nombres visibles, paisaje y menú superior. Textos de la
+pantalla principal en español; varias opciones heredadas siguen en inglés.
+Probar todas las direcciones, OK, mantener OK, Ajustes y retorno desde apps.
+Capturar desde el dispositivo con adb exec-out screencap -p y revisar márgenes.
+En Windows usar PowerShell 7.4+ para redirección binaria, o copiar stdout binario
+con una API de procesos. Windows PowerShell 5 puede corromper el PNG.
+
+8. CLIMA: IMPLEMENTADO Y VALIDADO EN LA TV DE REFERENCIA
+Se comprobó en Santiago de los Caballeros, República Dominicana. No asumir
+que otro aparato está allí: confirmar la ubicación que corresponda.
+Preguntar ciudad y país; no inferir la ciudad de una zona horaria ni usar GPS.
+Geocodificar con https://geocoding-api.open-meteo.com/v1/search, confirmar la
+ciudad/country_code correctos y guardar coordenadas generales de la ciudad:
+  weather.enabled=on
+  weather.city=NOMBRE_CONFIRMADO
+  weather.latitude=LATITUD
+  weather.longitude=LONGITUD
+Añadir las claves a la configuración actual, sin perder otras preferencias.
+Endpoint de consulta: https://api.open-meteo.com/v1/forecast
+Variables: current=temperature_2m,weather_code;
+daily=temperature_2m_max,temperature_2m_min,precipitation_probability_max;
+timezone=auto;forecast_days=1.
+Documentación: https://open-meteo.com/en/docs
+Internet se usa para estas consultas; el APK NO mantiene la condición de «sin
+Internet» del dumbtv oficial. No requiere permisos de localización ni API key
+para el uso personal descrito. Fuente/atribución en Personalizar.
+Actualiza cada 30 minutos con el inicio visible; reintenta a los cinco minutos
+si falla. Solo reutiliza caché del mismo día y menor de dos horas. Sin conexión
+y sin caché válida muestra que no hay clima disponible. Para apagarlo:
+  weather.enabled=off
+Verificar contra la respuesta real del proveedor y la fecha de la ciudad antes
+de afirmar que funciona. La TV debe tener fecha/hora correctas para HTTPS.
+
+9. CAMBIAR HOME A CINEMA: PROBADO EN EL AFTKA DE REFERENCIA
+Guard de Cinema quedó enlazado y HOME se probó desde aplicaciones y después
+de un reinicio confirmado por boot_id. El dumbtv oficial permanece instalado.
+Esta prueba no certifica otro firmware: aprobar y validar en cada nueva TV.
+Antes de activarlo en cualquier aparato, guardar el valor exacto de
+enabled_accessibility_services y accessibility_enabled. En Fire OS 7/8,
+sustituir únicamente el componente del lanzador previo por
+tv.dumbtv.cinema/tv.dumbtv.cinema.Guard, conservando otros servicios. Confirmar
+que queda enlazado en dumpsys accessibility; una clave escrita no prueba enlace.
+Conservar min_futurity=0 si se necesita y añadir Cinema a deviceidle whitelist,
+registrando si la exclusión ya existía. Probar HOME desde
+aplicaciones y después de reiniciar. No dejar ambos Guard compitiendo.
+El instalador oficial sigue apuntando a tv.dumbtv.home: no sirve para activar
+esta variante. No certificar Cinema con verify.sh oficial sin adaptarlo: este
+verificador tiene el paquete y la etiqueta originales escritos en el código.
+En Fire OS 6 no reutilizar este procedimiento de Guard: tiene Keeper y Cinema
+no fue probado allí. Detenerse y explicar el alcance antes de cambiar HOME.
+
+10. REINICIO Y COMPROBACIONES FINALES
+Guardar boot_id antes, pedir reinicio ordenado y reconectar. Confirmar un
+boot_id diferente además de sys.boot_completed=1: una conexión recuperada por
+sí sola no demuestra que se reinició. Aquí la primera petición ordenada no
+reinició y hubo que usar adb reboot después de esperar a que persistieran los
+cambios; el reinicio del dumbtv oficial se confirmó por boot_id.
+Comprobar paquetes desactivados esperados y ausencia de apps eliminadas.
+Comparar OTA/Alexa/streaming con estados previos; comprobar Ajustes y HOME.
+Prueba de voz por el propietario. No afirmar que se probó reproducción de vídeo
+si solo se abrió la app. No probar actualizaciones instalando una OTA por sorpresa.
+Las actualizaciones conservadas pueden restablecer opciones del lanzador.
+
+11. RESTAURACIÓN ESPECÍFICA DE CADA TV
+Restaurar únicamente los cambios registrados para ese aparato.
+Para paquetes publicitarios: recuperar el estado original exacto de cada uno:
+  enabled=0 -> pm default-state --user 0 PAQUETE
+  enabled=1 -> pm enable --user 0 PAQUETE
+  enabled=2 -> pm disable --user 0 PAQUETE
+  enabled=3 -> pm disable-user --user 0 PAQUETE
+No habilitar en bloque todo lo que el proyecto conoce.
+Para HOME, restaurar servicios de accesibilidad y accessibility_enabled exactos,
+así como alarm_manager_constants y HOME preferido si cambiaron. Si una clave no
+existía antes, borrarla; no escribir la cadena null. Restaurar exclusiones de
+deviceidle solo cuando se añadieron en esta sesión.
+launcher/install.sh --undo ayuda con el dumbtv oficial, pero no recupera todos
+los valores exactos ni administra el paquete Cinema. Quitar el servicio antes
+de desinstalar un lanzador. Desinstalar Cinema solamente si se añadió aquí y el
+propietario quiere quitarlo; eso elimina su configuración propia.
+No ejecutar restore.sh general para esta instalación limitada, porque también
+cambia paquetes, red y ajustes que no se modificaron aquí.
+No usar los restauradores de dumbtv/report de la TV original en otro aparato.
+
+12. RECOMPILAR, FIRMAS Y MANTENIMIENTO
+En esta computadora:
+  Set-Location cinema-launcher
+  .\build-windows.ps1
+Requiere ..\tools\jdk17 con un JDK 17, ..\tools\android-sdk\platform25 con
+android.jar de API25 y ..\tools\android-sdk\buildtools34 con Build-Tools34.
+JDK usado: Eclipse Temurin 17.0.20.1+1. Java se compila --release 8 y -Werror.
+El script usa aapt2, javac, d8, jar, zipalign y apksigner, sin Gradle.
+SDK oficial: platform-25_r03.zip y build-tools_r34-windows.zip, desde
+https://dl.google.com/android/repository/ . Revisar licencias del proveedor.
+El script crea una clave local si no existe. En una TV nueva sirve una nueva
+firma; para actualizar una instalación previa es imprescindible la misma clave.
+Conservar cinema.keystore de manera privada y respaldarla. El ZIP de transferencia
+no incluye la clave: el APK suministrado sí puede instalarse y actualizarse en
+otras TVs, pero nuevas versiones necesitan la firma original. No solucionar
+un conflicto de firma desinstalando automáticamente una configuración del dueño.
+
+13. ENTREGA Y PRIVACIDAD
+Mostrar qué se hizo, qué se verificó y qué quedó pendiente. No publicar reportes,
+IP/MAC/seriales, SSID, cuentas, claves, capturas privadas ni keystores.
+El ZIP tiene SHA-256 de archivos para comprobar integridad, no es una garantía
+de compatibilidad. Nunca afirmar que una TV fue probada solo por coincidir modelo.

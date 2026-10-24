@@ -1,0 +1,15 @@
+/tools/
+/dumbtv/
+reports/
+report/
+review/
+**/reports/
+**/report/
+**/review/
+**/build/
+*.keystore
+*.jks
+adbkey*
+home.conf
+.env*
+*.log

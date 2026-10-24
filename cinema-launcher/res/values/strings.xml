@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">Cinema home</string>
+    <string name="guard_label">Cinema home button</string>
+    <string name="guard_description">Abre Cinema home al pulsar HOME. No lee el contenido de la pantalla. Internet se utiliza para consultar el clima de la ciudad configurada.</string>
+</resources>

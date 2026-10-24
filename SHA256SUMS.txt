@@ -1,0 +1,2 @@
+ff93fea00a75013740386177f4676a16c136c4590b7433841b4f64ae3493651b  cinema-launcher/assets/wallpaper.png
+3ed0dc8e2309c67fb1a82effd2bdd3084478ff6a2748e91bc89e571748128d21  dist/cinema-home-1.2.apk

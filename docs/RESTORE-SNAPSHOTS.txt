@@ -1,0 +1,27 @@
+CAPTURAS PARA RESTAURAR EL HOME ANTERIOR
+
+Antes de activar Guard de Cinema en una nueva TV, guardar en un directorio privado:
+  cinema-enable-services-before.txt  = settings get secure enabled_accessibility_services
+  cinema-accessibility-before.txt   = settings get secure accessibility_enabled
+  cinema-alarm-before.txt           = settings get global alarm_manager_constants
+  cinema-whitelist-before.txt       = dumpsys deviceidle whitelist
+  cinema-device.json                = identidad local de la TV, según este esquema:
+    { "model": "VALOR_DE_ro.product.model", "serial": "VALOR_DE_ro.serialno" }
+
+Usar adb -s IP:5555 shell para leer esos datos. Guardar JSON y textos como UTF-8,
+sin publicarlos. Si el aparato no entrega un serial para comprobar identidad,
+el restaurador se detendrá; no eliminar esa comprobación para usar las capturas
+de otra TV. Preparar una restauración manual verificada en ese dispositivo.
+
+Para deshacer la activación de Cinema en la TV a la que pertenecen las capturas:
+  .\scripts\Restore-CinemaHome.ps1 -TvAddress 'IP:5555' -SnapshotDirectory 'RUTA_PRIVADA' -AdbPath 'RUTA_DE_ADB.EXE'
+
+El script recupera los servicios de accesibilidad, accessibility_enabled y
+alarmas anteriores, retira la exclusión de batería de Cinema solo si se añadió
+después de la captura y detiene Cinema. No desinstala por defecto. Añadir
+-RemoveCinema solo para quitar también la app y sus datos. Probar HOME al terminar.
+
+Este script restaura el enganche HOME, no los ocho paquetes publicitarios.
+Estos requieren sus estados enabled=N previos y restauración individual.
+El restaurador se revisó sintácticamente; no se ejecutó contra la TV de
+referencia porque revertiría la instalación que su dueño desea conservar.
